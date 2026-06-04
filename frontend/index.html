@@ -7,41 +7,99 @@
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
+    <div class="site-bg" aria-hidden="true"></div>
     <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/">
+          <span class="brand-mark">TS</span>
+          <span>
+            <strong>TruthShield</strong>
+            <small>AI risk intelligence</small>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#scan">Scan</a>
+          <a href="#report">Report</a>
+          <a href="#system">System</a>
+        </nav>
+      </header>
+
       <section class="hero">
         <div>
-          <p class="eyebrow">Privacy-first verification</p>
+          <p class="eyebrow">Privacy-first verification engine</p>
           <h1>TruthShield Lite</h1>
           <p class="lede">
-            Analyze suspicious messages, fake job offers, phishing emails, screenshots, and documents before you trust them.
+            Analyze suspicious messages, fake job offers, phishing emails, screenshots, and documents before you click, pay, share, or trust.
           </p>
+          <div class="hero-actions">
+            <a class="primary-link" href="#scan">Start scan</a>
+            <button class="ghost-button" id="sampleButton" type="button">Load sample</button>
+          </div>
         </div>
-        <div class="status-pill" id="healthStatus">Checking backend...</div>
+        <aside class="hero-card" id="system">
+          <div class="status-pill" id="healthStatus">Checking backend...</div>
+          <dl class="system-metrics">
+            <div>
+              <dt>Storage</dt>
+              <dd>Local-first</dd>
+            </div>
+            <div>
+              <dt>Mode</dt>
+              <dd>No database</dd>
+            </div>
+            <div>
+              <dt>Output</dt>
+              <dd>Evidence report</dd>
+            </div>
+          </dl>
+        </aside>
       </section>
 
-      <section class="workspace">
+      <section class="trust-strip" aria-label="Capabilities">
+        <span>Phishing signals</span>
+        <span>Fake job patterns</span>
+        <span>Suspicious links</span>
+        <span>Document risk</span>
+      </section>
+
+      <section class="workspace" id="scan">
         <form id="scanForm" class="panel">
-          <label for="textInput">Suspicious text, email, job offer, or message</label>
-          <textarea id="textInput" placeholder="Paste the suspicious content here..."></textarea>
+          <div class="panel-heading">
+            <span class="section-kicker">Input</span>
+            <h2>Scan suspicious content</h2>
+            <p>Paste the message exactly as received. Add a screenshot or document if you have one.</p>
+          </div>
+
+          <label for="textInput">Message, email, job offer, or notice</label>
+          <textarea id="textInput" placeholder="Paste suspicious content here..."></textarea>
 
           <label for="fileInput">Optional screenshot or document</label>
-          <input id="fileInput" type="file" />
+          <div class="file-control">
+            <input id="fileInput" type="file" />
+            <span id="fileName">No file selected</span>
+          </div>
 
-          <button type="submit" id="scanButton">Run Scan</button>
+          <div class="form-actions">
+            <button type="submit" id="scanButton">Run Scan</button>
+            <button type="button" class="secondary-button" id="clearButton">Clear</button>
+          </div>
         </form>
 
         <section class="panel result-panel">
           <div class="result-header">
-            <h2>Risk Report</h2>
+            <div>
+              <span class="section-kicker">Verdict</span>
+              <h2>Risk report</h2>
+            </div>
             <span id="riskBadge" class="risk-badge muted">Waiting</span>
           </div>
 
           <div class="score-grid">
-            <div>
+            <div class="score-card">
               <span class="label">Text Risk</span>
               <strong id="textScore">--</strong>
             </div>
-            <div>
+            <div class="score-card">
               <span class="label">File Risk</span>
               <strong id="fileScore">--</strong>
             </div>
@@ -57,10 +115,13 @@
         </section>
       </section>
 
-      <section class="panel report-panel">
+      <section class="panel report-panel" id="report">
         <div class="result-header">
-          <h2>Generated Markdown Report</h2>
-          <button id="copyReport" type="button">Copy</button>
+          <div>
+            <span class="section-kicker">Artifact</span>
+            <h2>Generated Markdown report</h2>
+          </div>
+          <button id="copyReport" class="secondary-button" type="button">Copy</button>
         </div>
         <pre id="markdownReport">No report yet.</pre>
       </section>
@@ -69,4 +130,3 @@
     <script src="/app.js"></script>
   </body>
 </html>
-

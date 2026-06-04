@@ -10,6 +10,15 @@ const evidenceList = document.querySelector("#evidenceList");
 const contextList = document.querySelector("#contextList");
 const markdownReport = document.querySelector("#markdownReport");
 const copyReport = document.querySelector("#copyReport");
+const sampleButton = document.querySelector("#sampleButton");
+const clearButton = document.querySelector("#clearButton");
+const fileName = document.querySelector("#fileName");
+
+const sampleText = `Congratulations! You are selected for a remote data analyst job with salary 90000 per month.
+
+To confirm your joining, pay Rs 2999 processing fee today only and verify your profile at http://verify-job.xyz.
+
+This offer is confidential and no interview is required.`;
 
 async function checkHealth() {
   try {
@@ -51,6 +60,28 @@ form.addEventListener("submit", async (event) => {
     scanButton.disabled = false;
     scanButton.textContent = "Run Scan";
   }
+});
+
+sampleButton.addEventListener("click", () => {
+  textInput.value = sampleText;
+  textInput.focus();
+});
+
+clearButton.addEventListener("click", () => {
+  textInput.value = "";
+  fileInput.value = "";
+  fileName.textContent = "No file selected";
+  riskBadge.textContent = "Waiting";
+  riskBadge.className = "risk-badge muted";
+  textScore.textContent = "--";
+  fileScore.textContent = "--";
+  evidenceList.innerHTML = "<li>Run a scan to see evidence.</li>";
+  contextList.innerHTML = "";
+  markdownReport.textContent = "No report yet.";
+});
+
+fileInput.addEventListener("change", () => {
+  fileName.textContent = fileInput.files[0]?.name || "No file selected";
 });
 
 copyReport.addEventListener("click", async () => {
@@ -116,4 +147,3 @@ function escapeHtml(value) {
 }
 
 checkHealth();
-

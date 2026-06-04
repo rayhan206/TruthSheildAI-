@@ -1,4 +1,4 @@
-"""
+﻿"""
 TruthShield Lite - single-file runnable edition.
 
 Run:
@@ -69,370 +69,769 @@ HTML = r"""<!doctype html>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TruthShield Lite</title>
     <style>
-      :root {
-        color-scheme: light;
-        --bg: #f5f7fb;
-        --panel: #ffffff;
-        --ink: #18202f;
-        --muted: #697386;
-        --line: #dbe2ee;
-        --accent: #0f766e;
-        --danger: #b42318;
-        --warn: #b54708;
-        --safe: #157f3b;
-        --shadow: 0 20px 50px rgba(25, 37, 60, 0.08);
-      }
+:root {
+  color-scheme: light;
+  --color-bg: #f6f8fc;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f9fbff;
+  --color-ink: #101828;
+  --color-muted: #667085;
+  --color-border: #d9e2ef;
+  --color-primary: #0b5fff;
+  --color-primary-dark: #0747b6;
+  --color-primary-soft: #eaf1ff;
+  --color-accent: #00a88e;
+  --color-danger: #b42318;
+  --color-warning: #b54708;
+  --color-safe: #157f3b;
+  --color-code: #0b1220;
+  --shadow-sm: 0 10px 30px rgba(16, 24, 40, 0.08);
+  --shadow-md: 0 24px 70px rgba(16, 24, 40, 0.12);
+  --radius: 8px;
+}
 
-      * { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-      body {
-        margin: 0;
-        min-height: 100vh;
-        background: var(--bg);
-        color: var(--ink);
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
 
-      .app-shell {
-        width: min(1180px, calc(100% - 32px));
-        margin: 0 auto;
-        padding: 34px 0;
-      }
+body::selection {
+  background: var(--color-primary-soft);
+}
 
-      .hero {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 24px;
-        align-items: end;
-        padding: 16px 0 28px;
-      }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-      .eyebrow {
-        margin: 0 0 8px;
-        color: var(--accent);
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.78rem;
-      }
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(135deg, rgba(11, 95, 255, 0.08), transparent 34%),
+    linear-gradient(225deg, rgba(0, 168, 142, 0.08), transparent 36%);
+}
 
-      h1, h2, h3, p { margin-top: 0; }
+.app-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 24px 0 40px;
+}
 
-      h1 {
-        margin-bottom: 10px;
-        font-size: clamp(2rem, 5vw, 4.8rem);
-        line-height: 0.95;
-      }
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 42px;
+}
 
-      .lede {
-        max-width: 720px;
-        color: var(--muted);
-        font-size: 1.08rem;
-        line-height: 1.6;
-        margin-bottom: 0;
-      }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
 
-      .status-pill, .risk-badge {
-        border: 1px solid var(--line);
-        background: #eef6f5;
-        color: var(--accent);
-        padding: 9px 12px;
-        border-radius: 8px;
-        font-weight: 700;
-        white-space: nowrap;
-      }
+.brand-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: var(--radius);
+  background: var(--color-ink);
+  color: white;
+  font-weight: 900;
+}
 
-      .workspace {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
-        gap: 18px;
-        align-items: start;
-      }
+.brand strong,
+.brand small {
+  display: block;
+}
 
-      .panel {
-        background: var(--panel);
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        box-shadow: var(--shadow);
-        padding: 20px;
-      }
+.brand small {
+  color: var(--color-muted);
+  margin-top: 2px;
+}
 
-      label {
-        display: block;
-        font-weight: 750;
-        margin-bottom: 8px;
-      }
+.nav-links {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: var(--shadow-sm);
+}
 
-      textarea {
-        width: 100%;
-        min-height: 260px;
-        resize: vertical;
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 14px;
-        font: inherit;
-        line-height: 1.5;
-        color: var(--ink);
-        margin-bottom: 18px;
-      }
+.nav-links a {
+  color: var(--color-muted);
+  font-weight: 750;
+  padding: 9px 12px;
+  border-radius: var(--radius);
+}
 
-      input[type="file"] {
-        width: 100%;
-        border: 1px dashed #aab7ca;
-        border-radius: 8px;
-        padding: 14px;
-        margin-bottom: 18px;
-        background: #f8fafc;
-      }
+.nav-links a:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
 
-      button {
-        border: 0;
-        border-radius: 8px;
-        background: var(--accent);
-        color: white;
-        font: inherit;
-        font-weight: 800;
-        min-height: 44px;
-        padding: 0 18px;
-        cursor: pointer;
-      }
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 28px;
+  align-items: stretch;
+  padding: 12px 0 22px;
+}
 
-      button:disabled { opacity: 0.65; cursor: wait; }
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--color-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0;
+}
 
-      .result-header {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        align-items: center;
-        margin-bottom: 18px;
-      }
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
 
-      .result-header h2 { margin-bottom: 0; }
+h1 {
+  margin-bottom: 10px;
+  font-size: clamp(2rem, 5vw, 4.8rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
 
-      .score-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin-bottom: 22px;
-      }
+.lede {
+  max-width: 720px;
+  color: var(--color-muted);
+  font-size: 1.08rem;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
 
-      .score-grid > div {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 14px;
-        background: #f8fafc;
-      }
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
 
-      .label {
-        display: block;
-        color: var(--muted);
-        font-size: 0.9rem;
-        margin-bottom: 6px;
-      }
+.primary-link,
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: white;
+  font: inherit;
+  font-weight: 850;
+  min-height: 46px;
+  padding: 0 18px;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(11, 95, 255, 0.18);
+}
 
-      .score-grid strong { font-size: 1.6rem; }
+.primary-link:hover,
+button:hover {
+  background: var(--color-primary-dark);
+}
 
-      .evidence-list {
-        padding-left: 18px;
-        color: #344054;
-        line-height: 1.55;
-      }
+.ghost-button,
+.secondary-button {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
 
-      .context-list {
-        display: grid;
-        gap: 10px;
-      }
+.ghost-button:hover,
+.secondary-button:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
 
-      .context-card {
-        border: 1px solid var(--line);
-        border-radius: 8px;
-        padding: 12px;
-        background: #fbfcff;
-      }
+.hero-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: var(--shadow-md);
+  padding: 18px;
+}
 
-      .context-card h4 { margin: 0 0 6px; }
+.status-pill,
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  padding: 9px 12px;
+  border-radius: var(--radius);
+  font-weight: 700;
+  white-space: nowrap;
+}
 
-      .context-card p {
-        margin: 0;
-        color: var(--muted);
-        line-height: 1.45;
-      }
+.system-metrics {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 0;
+}
 
-      .report-panel { margin-top: 18px; }
+.system-metrics div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--color-surface-soft);
+}
 
-      pre {
-        margin: 0;
-        overflow: auto;
-        max-height: 420px;
-        white-space: pre-wrap;
-        line-height: 1.55;
-        background: #101828;
-        color: #e4e7ec;
-        border-radius: 8px;
-        padding: 16px;
-      }
+.system-metrics dt,
+.system-metrics dd {
+  margin: 0;
+}
 
-      .muted { color: var(--muted); background: #f2f4f7; }
-      .high { color: var(--danger); background: #fff1f0; }
-      .medium { color: var(--warn); background: #fff7ed; }
-      .low { color: var(--safe); background: #ecfdf3; }
+.system-metrics dt {
+  color: var(--color-muted);
+}
 
-      @media (max-width: 860px) {
-        .hero, .workspace { grid-template-columns: 1fr; }
-        h1 { font-size: 2.7rem; }
-      }
+.system-metrics dd {
+  font-weight: 850;
+}
+
+.trust-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.trust-strip span {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--color-muted);
+  font-weight: 800;
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 22px;
+}
+
+.panel-heading {
+  margin-bottom: 18px;
+}
+
+.panel-heading h2,
+.result-header h2 {
+  margin-bottom: 6px;
+}
+
+.panel-heading p {
+  color: var(--color-muted);
+  line-height: 1.55;
+  margin-bottom: 0;
+}
+
+.section-kicker {
+  display: block;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+label {
+  display: block;
+  font-weight: 750;
+  margin-bottom: 8px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 260px;
+  resize: vertical;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  font: inherit;
+  line-height: 1.5;
+  color: var(--color-ink);
+  margin-bottom: 18px;
+  background: var(--color-surface-soft);
+  outline: none;
+}
+
+textarea:focus,
+input[type="file"]:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(11, 95, 255, 0.12);
+}
+
+input[type="file"] {
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.file-control {
+  display: grid;
+  gap: 10px;
+  border: 1px dashed #9fb2ce;
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 18px;
+  background: var(--color-surface-soft);
+}
+
+.file-control span {
+  color: var(--color-muted);
+  font-size: 0.92rem;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.result-header h2 {
+  margin-bottom: 0;
+}
+
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.score-grid > div {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  background: var(--color-surface-soft);
+}
+
+.label {
+  display: block;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.score-grid strong {
+  font-size: 1.6rem;
+}
+
+.evidence-list {
+  padding-left: 18px;
+  color: #344054;
+  line-height: 1.55;
+}
+
+.context-list {
+  display: grid;
+  gap: 10px;
+}
+
+.context-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 12px;
+  background: var(--color-surface-soft);
+}
+
+.context-card h4 {
+  margin: 0 0 6px;
+}
+
+.context-card p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.45;
+}
+
+.report-panel {
+  margin-top: 18px;
+}
+
+pre {
+  margin: 0;
+  overflow: auto;
+  max-height: 420px;
+  white-space: pre-wrap;
+  line-height: 1.55;
+  background: var(--color-code);
+  color: #e4e7ec;
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.muted {
+  color: var(--color-muted);
+  background: #f2f4f7;
+}
+
+.high {
+  color: var(--color-danger);
+  background: #fff1f0;
+}
+
+.medium {
+  color: var(--color-warning);
+  background: #fff7ed;
+}
+
+.low {
+  color: var(--color-safe);
+  background: #ecfdf3;
+}
+
+@media (max-width: 860px) {
+  .hero,
+  .workspace,
+  .trust-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    margin-bottom: 28px;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  h1 {
+    font-size: 2.7rem;
+  }
+}
+
     </style>
   </head>
   <body>
+    <div class="site-bg" aria-hidden="true"></div>
     <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/">
+          <span class="brand-mark">TS</span>
+          <span>
+            <strong>TruthShield</strong>
+            <small>AI risk intelligence</small>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="#scan">Scan</a>
+          <a href="#report">Report</a>
+          <a href="#system">System</a>
+        </nav>
+      </header>
+
       <section class="hero">
         <div>
-          <p class="eyebrow">Privacy-first verification</p>
+          <p class="eyebrow">Privacy-first verification engine</p>
           <h1>TruthShield Lite</h1>
-          <p class="lede">Analyze suspicious messages, fake job offers, phishing emails, screenshots, and documents before you trust them.</p>
+          <p class="lede">
+            Analyze suspicious messages, fake job offers, phishing emails, screenshots, and documents before you click, pay, share, or trust.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-link" href="#scan">Start scan</a>
+            <button class="ghost-button" id="sampleButton" type="button">Load sample</button>
+          </div>
         </div>
-        <div class="status-pill" id="healthStatus">Checking backend...</div>
+        <aside class="hero-card" id="system">
+          <div class="status-pill" id="healthStatus">Checking backend...</div>
+          <dl class="system-metrics">
+            <div>
+              <dt>Storage</dt>
+              <dd>Local-first</dd>
+            </div>
+            <div>
+              <dt>Mode</dt>
+              <dd>No database</dd>
+            </div>
+            <div>
+              <dt>Output</dt>
+              <dd>Evidence report</dd>
+            </div>
+          </dl>
+        </aside>
       </section>
 
-      <section class="workspace">
+      <section class="trust-strip" aria-label="Capabilities">
+        <span>Phishing signals</span>
+        <span>Fake job patterns</span>
+        <span>Suspicious links</span>
+        <span>Document risk</span>
+      </section>
+
+      <section class="workspace" id="scan">
         <form id="scanForm" class="panel">
-          <label for="textInput">Suspicious text, email, job offer, or message</label>
-          <textarea id="textInput" placeholder="Paste the suspicious content here..."></textarea>
+          <div class="panel-heading">
+            <span class="section-kicker">Input</span>
+            <h2>Scan suspicious content</h2>
+            <p>Paste the message exactly as received. Add a screenshot or document if you have one.</p>
+          </div>
+
+          <label for="textInput">Message, email, job offer, or notice</label>
+          <textarea id="textInput" placeholder="Paste suspicious content here..."></textarea>
+
           <label for="fileInput">Optional screenshot or document</label>
-          <input id="fileInput" type="file" />
-          <button type="submit" id="scanButton">Run Scan</button>
+          <div class="file-control">
+            <input id="fileInput" type="file" />
+            <span id="fileName">No file selected</span>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" id="scanButton">Run Scan</button>
+            <button type="button" class="secondary-button" id="clearButton">Clear</button>
+          </div>
         </form>
 
         <section class="panel result-panel">
           <div class="result-header">
-            <h2>Risk Report</h2>
+            <div>
+              <span class="section-kicker">Verdict</span>
+              <h2>Risk report</h2>
+            </div>
             <span id="riskBadge" class="risk-badge muted">Waiting</span>
           </div>
+
           <div class="score-grid">
-            <div><span class="label">Text Risk</span><strong id="textScore">--</strong></div>
-            <div><span class="label">File Risk</span><strong id="fileScore">--</strong></div>
+            <div class="score-card">
+              <span class="label">Text Risk</span>
+              <strong id="textScore">--</strong>
+            </div>
+            <div class="score-card">
+              <span class="label">File Risk</span>
+              <strong id="fileScore">--</strong>
+            </div>
           </div>
+
           <h3>Evidence</h3>
-          <ul id="evidenceList" class="evidence-list"><li>Run a scan to see evidence.</li></ul>
+          <ul id="evidenceList" class="evidence-list">
+            <li>Run a scan to see evidence.</li>
+          </ul>
+
           <h3>Recommended Safety Context</h3>
           <div id="contextList" class="context-list"></div>
         </section>
       </section>
 
-      <section class="panel report-panel">
+      <section class="panel report-panel" id="report">
         <div class="result-header">
-          <h2>Generated Markdown Report</h2>
-          <button id="copyReport" type="button">Copy</button>
+          <div>
+            <span class="section-kicker">Artifact</span>
+            <h2>Generated Markdown report</h2>
+          </div>
+          <button id="copyReport" class="secondary-button" type="button">Copy</button>
         </div>
         <pre id="markdownReport">No report yet.</pre>
       </section>
     </main>
 
     <script>
-      const form = document.querySelector("#scanForm");
-      const textInput = document.querySelector("#textInput");
-      const fileInput = document.querySelector("#fileInput");
-      const scanButton = document.querySelector("#scanButton");
-      const healthStatus = document.querySelector("#healthStatus");
-      const riskBadge = document.querySelector("#riskBadge");
-      const textScore = document.querySelector("#textScore");
-      const fileScore = document.querySelector("#fileScore");
-      const evidenceList = document.querySelector("#evidenceList");
-      const contextList = document.querySelector("#contextList");
-      const markdownReport = document.querySelector("#markdownReport");
-      const copyReport = document.querySelector("#copyReport");
+const form = document.querySelector("#scanForm");
+const textInput = document.querySelector("#textInput");
+const fileInput = document.querySelector("#fileInput");
+const scanButton = document.querySelector("#scanButton");
+const healthStatus = document.querySelector("#healthStatus");
+const riskBadge = document.querySelector("#riskBadge");
+const textScore = document.querySelector("#textScore");
+const fileScore = document.querySelector("#fileScore");
+const evidenceList = document.querySelector("#evidenceList");
+const contextList = document.querySelector("#contextList");
+const markdownReport = document.querySelector("#markdownReport");
+const copyReport = document.querySelector("#copyReport");
+const sampleButton = document.querySelector("#sampleButton");
+const clearButton = document.querySelector("#clearButton");
+const fileName = document.querySelector("#fileName");
 
-      async function checkHealth() {
-        try {
-          const response = await fetch("/api/health");
-          const data = await response.json();
-          healthStatus.textContent = data.status === "ok" ? "Backend online" : "Backend unavailable";
-        } catch {
-          healthStatus.textContent = "Backend unavailable";
-        }
-      }
+const sampleText = `Congratulations! You are selected for a remote data analyst job with salary 90000 per month.
 
-      form.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        scanButton.disabled = true;
-        scanButton.textContent = "Scanning...";
+To confirm your joining, pay Rs 2999 processing fee today only and verify your profile at http://verify-job.xyz.
 
-        try {
-          const file = fileInput.files[0];
-          const payload = {
-            text: textInput.value,
-            file: file ? await fileToPayload(file) : null,
-          };
-          const response = await fetch("/api/scan", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          if (!response.ok) throw new Error("Scan failed");
-          renderResult(await response.json());
-        } catch (error) {
-          alert(error.message);
-        } finally {
-          scanButton.disabled = false;
-          scanButton.textContent = "Run Scan";
-        }
+This offer is confidential and no interview is required.`;
+
+async function checkHealth() {
+  try {
+    const response = await fetch("/api/health");
+    const data = await response.json();
+    healthStatus.textContent = data.status === "ok" ? "Backend online" : "Backend unavailable";
+  } catch {
+    healthStatus.textContent = "Backend unavailable";
+  }
+}
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  scanButton.disabled = true;
+  scanButton.textContent = "Scanning...";
+
+  try {
+    const file = fileInput.files[0];
+    const payload = {
+      text: textInput.value,
+      file: file ? await fileToPayload(file) : null,
+    };
+
+    const response = await fetch("/api/scan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error("Scan failed");
+    }
+
+    const result = await response.json();
+    renderResult(result);
+  } catch (error) {
+    alert(error.message);
+  } finally {
+    scanButton.disabled = false;
+    scanButton.textContent = "Run Scan";
+  }
+});
+
+sampleButton.addEventListener("click", () => {
+  textInput.value = sampleText;
+  textInput.focus();
+});
+
+clearButton.addEventListener("click", () => {
+  textInput.value = "";
+  fileInput.value = "";
+  fileName.textContent = "No file selected";
+  riskBadge.textContent = "Waiting";
+  riskBadge.className = "risk-badge muted";
+  textScore.textContent = "--";
+  fileScore.textContent = "--";
+  evidenceList.innerHTML = "<li>Run a scan to see evidence.</li>";
+  contextList.innerHTML = "";
+  markdownReport.textContent = "No report yet.";
+});
+
+fileInput.addEventListener("change", () => {
+  fileName.textContent = fileInput.files[0]?.name || "No file selected";
+});
+
+copyReport.addEventListener("click", async () => {
+  await navigator.clipboard.writeText(markdownReport.textContent);
+  copyReport.textContent = "Copied";
+  setTimeout(() => {
+    copyReport.textContent = "Copy";
+  }, 1200);
+});
+
+function renderResult(result) {
+  const level = result.ml_result.risk_level;
+  riskBadge.textContent = `${level} Risk`;
+  riskBadge.className = `risk-badge ${level.toLowerCase()}`;
+
+  textScore.textContent = `${result.ml_result.risk_score}/100`;
+  fileScore.textContent = `${result.dl_result.visual_risk_score}/100`;
+
+  evidenceList.innerHTML = "";
+  [...result.ml_result.top_reasons, ...result.dl_result.signals].forEach((reason) => {
+    const li = document.createElement("li");
+    li.textContent = reason;
+    evidenceList.appendChild(li);
+  });
+
+  contextList.innerHTML = "";
+  result.rag_context.forEach((context) => {
+    const card = document.createElement("article");
+    card.className = "context-card";
+    card.innerHTML = `
+      <h4>${escapeHtml(context.title)}</h4>
+      <p>${escapeHtml(context.description)}</p>
+    `;
+    contextList.appendChild(card);
+  });
+
+  markdownReport.textContent = result.report_markdown;
+}
+
+function fileToPayload(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = String(reader.result).split(",")[1];
+      resolve({
+        name: file.name,
+        type: file.type,
+        data: base64,
       });
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
-      copyReport.addEventListener("click", async () => {
-        await navigator.clipboard.writeText(markdownReport.textContent);
-        copyReport.textContent = "Copied";
-        setTimeout(() => { copyReport.textContent = "Copy"; }, 1200);
-      });
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
-      function renderResult(result) {
-        const level = result.ml_result.risk_level;
-        riskBadge.textContent = `${level} Risk`;
-        riskBadge.className = `risk-badge ${level.toLowerCase()}`;
-        textScore.textContent = `${result.ml_result.risk_score}/100`;
-        fileScore.textContent = `${result.dl_result.visual_risk_score}/100`;
+checkHealth();
 
-        evidenceList.innerHTML = "";
-        [...result.ml_result.top_reasons, ...result.dl_result.signals].forEach((reason) => {
-          const li = document.createElement("li");
-          li.textContent = reason;
-          evidenceList.appendChild(li);
-        });
-
-        contextList.innerHTML = "";
-        result.rag_context.forEach((context) => {
-          const card = document.createElement("article");
-          card.className = "context-card";
-          card.innerHTML = `<h4>${escapeHtml(context.title)}</h4><p>${escapeHtml(context.description)}</p>`;
-          contextList.appendChild(card);
-        });
-
-        markdownReport.textContent = result.report_markdown;
-      }
-
-      function fileToPayload(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const base64 = String(reader.result).split(",")[1];
-            resolve({ name: file.name, type: file.type, data: base64 });
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      }
-
-      function escapeHtml(value) {
-        return String(value)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#039;");
-      }
-
-      checkHealth();
     </script>
   </body>
-</html>"""
+</html>
+"""
 
 
 URGENCY_TERMS = {
@@ -456,7 +855,7 @@ def extract_text_features(text):
     urls = re.findall(r"https?://[^\s)>\]]+|www\.[^\s)>\]]+", normalized)
     phones = re.findall(r"(?:\+?\d[\s-]?){8,}", normalized)
     emails = re.findall(r"[\w\.-]+@[\w\.-]+\.\w+", normalized)
-    money_mentions = re.findall(r"(?:rs\.?|inr|\$|₹)\s?\d+|\d+\s?(?:rs|inr|rupees|dollars)", normalized)
+    money_mentions = re.findall(r"(?:rs\.?|inr|\$|â‚¹)\s?\d+|\d+\s?(?:rs|inr|rupees|dollars)", normalized)
     uppercase_words = re.findall(r"\b[A-Z]{3,}\b", text)
     suspicious_urls = [url for url in urls if is_suspicious_url(url)]
     words = re.findall(r"\w+", text)
@@ -818,4 +1217,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
