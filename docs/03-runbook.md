@@ -21,6 +21,16 @@ http://localhost:8000
 
 The `-B` flag prevents Python from creating `__pycache__` folders, which keeps the workspace cleaner on restricted Windows environments.
 
+## Start The Single-File Edition
+
+For a one-file demo:
+
+```powershell
+python -B truthshield_compiled.py
+```
+
+This file contains the UI, API server, scanner logic, local knowledge base, and Markdown report generator in exact execution order.
+
 ## Test Input
 
 Paste this sample:
@@ -43,4 +53,3 @@ GET  /api/scans
 GET  /api/scans/{scan_id}
 POST /api/scan
 ```
-

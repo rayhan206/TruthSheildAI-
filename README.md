@@ -41,10 +41,27 @@ Open:
 http://localhost:8000
 ```
 
+## Single-File Runnable Edition
+
+For users who want the whole demo in one file:
+
+```powershell
+python -B truthshield_compiled.py
+```
+
+This launches the same app at:
+
+```txt
+http://localhost:8000
+```
+
+The single-file edition bundles the frontend, backend routes, scanner logic, local knowledge base, and report generator into `truthshield_compiled.py`.
+
 ## Project Structure
 
 ```txt
 truthshield-lite/
+  truthshield_compiled.py
   backend/
     app.py
     engine/
