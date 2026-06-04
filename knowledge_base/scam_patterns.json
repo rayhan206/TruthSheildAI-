@@ -1,0 +1,33 @@
+[
+  {
+    "title": "Advance fee or fake job scam",
+    "description": "A fake opportunity asks the victim to pay a registration, processing, training, verification, or equipment fee before receiving salary or benefits.",
+    "signals": ["payment before work", "unrealistic salary", "no interview", "urgent joining", "registration fee"],
+    "recommended_action": "Do not pay. Verify the company domain, recruiter identity, and official career page."
+  },
+  {
+    "title": "Phishing link verification scam",
+    "description": "The message pressures the user to open a link and verify account, KYC, bank, delivery, or login information.",
+    "signals": ["verify now", "account suspended", "login link", "KYC update", "bank warning"],
+    "recommended_action": "Avoid the link. Visit the official website manually or call the official support number."
+  },
+  {
+    "title": "Prize or lottery scam",
+    "description": "The sender claims the user won a prize, refund, gift, or lottery and asks for personal information, payment, or a link click.",
+    "signals": ["congratulations", "claim prize", "processing fee", "limited time", "tax payment"],
+    "recommended_action": "Treat unexpected winnings as suspicious and verify with the official organizer."
+  },
+  {
+    "title": "Impersonation and authority pressure",
+    "description": "The sender pretends to be a government office, police, bank, company, or senior person and pressures immediate action.",
+    "signals": ["official warning", "legal action", "blocked account", "confidential request", "do not share"],
+    "recommended_action": "Pause and verify through a separate trusted channel before responding."
+  },
+  {
+    "title": "Suspicious attachment or screenshot",
+    "description": "Scammers may send fake invoices, offer letters, screenshots, or documents to create false trust.",
+    "signals": ["invoice attachment", "offer letter", "payment proof", "edited screenshot", "unknown file"],
+    "recommended_action": "Do not open unknown files on a primary device. Verify source and scan attachments first."
+  }
+]
+

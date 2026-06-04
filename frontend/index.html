@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TruthShield Lite</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Privacy-first verification</p>
+          <h1>TruthShield Lite</h1>
+          <p class="lede">
+            Analyze suspicious messages, fake job offers, phishing emails, screenshots, and documents before you trust them.
+          </p>
+        </div>
+        <div class="status-pill" id="healthStatus">Checking backend...</div>
+      </section>
+
+      <section class="workspace">
+        <form id="scanForm" class="panel">
+          <label for="textInput">Suspicious text, email, job offer, or message</label>
+          <textarea id="textInput" placeholder="Paste the suspicious content here..."></textarea>
+
+          <label for="fileInput">Optional screenshot or document</label>
+          <input id="fileInput" type="file" />
+
+          <button type="submit" id="scanButton">Run Scan</button>
+        </form>
+
+        <section class="panel result-panel">
+          <div class="result-header">
+            <h2>Risk Report</h2>
+            <span id="riskBadge" class="risk-badge muted">Waiting</span>
+          </div>
+
+          <div class="score-grid">
+            <div>
+              <span class="label">Text Risk</span>
+              <strong id="textScore">--</strong>
+            </div>
+            <div>
+              <span class="label">File Risk</span>
+              <strong id="fileScore">--</strong>
+            </div>
+          </div>
+
+          <h3>Evidence</h3>
+          <ul id="evidenceList" class="evidence-list">
+            <li>Run a scan to see evidence.</li>
+          </ul>
+
+          <h3>Recommended Safety Context</h3>
+          <div id="contextList" class="context-list"></div>
+        </section>
+      </section>
+
+      <section class="panel report-panel">
+        <div class="result-header">
+          <h2>Generated Markdown Report</h2>
+          <button id="copyReport" type="button">Copy</button>
+        </div>
+        <pre id="markdownReport">No report yet.</pre>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
+
