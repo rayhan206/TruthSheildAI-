@@ -12,10 +12,16 @@ def analyze_uploaded_file(file_meta, file_bytes):
     content_type = file_meta.get("content_type", "")
     score = 10
     signals = []
+    video_exts = [".mp4", ".mov", ".webm", ".avi", ".mkv"]
+    image_exts = [".png", ".jpg", ".jpeg", ".webp"]
 
-    if any(name.endswith(ext) for ext in [".png", ".jpg", ".jpeg", ".webp"]):
+    if any(name.endswith(ext) for ext in video_exts) or content_type.startswith("video/"):
+        score += 24
+        signals.append("Video uploaded for AI-media/deepfake-style screening.")
+        signals.append("MVP detector checks metadata and naming signals; production upgrade should analyze frames and audio sync.")
+    elif any(name.endswith(ext) for ext in image_exts):
         score += 15
-        signals.append("Image/screenshot uploaded for visual trust analysis.")
+        signals.append("Image/screenshot uploaded for visual trust and AI-media screening.")
     elif any(name.endswith(ext) for ext in [".pdf", ".doc", ".docx"]):
         score += 8
         signals.append("Document-like file uploaded; verify source and metadata.")
@@ -30,15 +36,25 @@ def analyze_uploaded_file(file_meta, file_bytes):
         score += 5
         signals.append("Large file; manual review recommended before sharing or opening.")
 
-    risky_name_tokens = ["offer", "prize", "claim", "kyc", "verify", "urgent", "payment", "invoice"]
+    risky_name_tokens = [
+        "offer", "prize", "claim", "kyc", "verify", "urgent", "payment", "invoice",
+        "deepfake", "ai", "synthetic", "clone", "celebrity", "crypto", "investment",
+    ]
     matched = [token for token in risky_name_tokens if token in name]
     if matched:
         score += min(len(matched) * 9, 24)
         signals.append("Filename contains risk-related words: " + ", ".join(matched))
 
-    if "image" in content_type and not any(name.endswith(ext) for ext in [".png", ".jpg", ".jpeg", ".webp"]):
+    if any(token in name for token in ["face", "voice", "clone", "celebrity", "investment"]):
+        score += 16
+        signals.append("Media filename suggests impersonation, voice/face cloning, or investment persuasion context.")
+
+    if "image" in content_type and not any(name.endswith(ext) for ext in image_exts):
         score += 10
         signals.append("Content type and extension do not clearly match.")
+    if "video" in content_type and not any(name.endswith(ext) for ext in video_exts):
+        score += 10
+        signals.append("Video content type and extension do not clearly match.")
 
     score = max(0, min(score, 100))
     if score >= 70:
@@ -54,4 +70,3 @@ def analyze_uploaded_file(file_meta, file_bytes):
         "model_name": "TruthShield visual heuristic baseline v1",
         "signals": signals,
     }
-

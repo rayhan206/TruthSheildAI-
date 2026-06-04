@@ -8,6 +8,9 @@ TruthShield Lite is a database-free full-stack project. Each scan is stored as a
 
 - Accepts pasted suspicious text, job offers, emails, or messages.
 - Optionally accepts an uploaded image, screenshot, or document-like file.
+- Provides investigation modes for scam text, fake jobs, suspicious URLs, and AI media.
+- Includes an AI-media detector MVP for image/video metadata and deepfake-style naming signals.
+- Shows risk category meters, highlighted evidence, local scan history, and a threat watchlist.
 - Extracts text/security features.
 - Produces an ML-style risk score.
 - Produces a DL-style visual risk estimate for uploaded files.

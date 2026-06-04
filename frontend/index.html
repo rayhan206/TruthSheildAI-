@@ -18,73 +18,125 @@
           </span>
         </a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="#scan">Scan</a>
+          <a href="#lab">Lab</a>
+          <a href="#results">Results</a>
+          <a href="#history">History</a>
           <a href="#report">Report</a>
-          <a href="#system">System</a>
         </nav>
       </header>
 
       <section class="hero">
-        <div>
-          <p class="eyebrow">Privacy-first verification engine</p>
-          <h1>TruthShield Lite</h1>
+        <div class="hero-copy">
+          <p class="eyebrow">Digital forensics lab</p>
+          <h1>Verify before you trust.</h1>
           <p class="lede">
-            Analyze suspicious messages, fake job offers, phishing emails, screenshots, and documents before you click, pay, share, or trust.
+            Analyze scam messages, fake job offers, phishing links, suspicious documents, and AI-generated media in one privacy-first workspace.
           </p>
           <div class="hero-actions">
-            <a class="primary-link" href="#scan">Start scan</a>
-            <button class="ghost-button" id="sampleButton" type="button">Load sample</button>
+            <a class="primary-link" href="#lab">Open scanner</a>
+            <button class="ghost-button" id="sampleButton" type="button">Load scam sample</button>
           </div>
         </div>
         <aside class="hero-card" id="system">
           <div class="status-pill" id="healthStatus">Checking backend...</div>
+          <div class="threat-meter" aria-label="Threat intelligence readiness">
+            <span style="--meter: 82%"></span>
+          </div>
           <dl class="system-metrics">
             <div>
               <dt>Storage</dt>
               <dd>Local-first</dd>
             </div>
             <div>
-              <dt>Mode</dt>
-              <dd>No database</dd>
+              <dt>AI Media</dt>
+              <dd>Detector MVP</dd>
             </div>
             <div>
-              <dt>Output</dt>
-              <dd>Evidence report</dd>
+              <dt>Reports</dt>
+              <dd>Export-ready</dd>
             </div>
           </dl>
         </aside>
       </section>
 
-      <section class="trust-strip" aria-label="Capabilities">
-        <span>Phishing signals</span>
-        <span>Fake job patterns</span>
-        <span>Suspicious links</span>
-        <span>Document risk</span>
+      <section class="capability-grid" aria-label="Capabilities">
+        <article>
+          <span>01</span>
+          <strong>Message intelligence</strong>
+          <p>Pressure, payment, impersonation, and suspicious wording signals.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <strong>URL risk scan</strong>
+          <p>Fake login paths, risky domains, shortened links, and brand mismatch hints.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <strong>AI media detector</strong>
+          <p>Image/video metadata and deepfake-style filename signal analysis.</p>
+        </article>
+        <article>
+          <span>04</span>
+          <strong>Evidence report</strong>
+          <p>Markdown artifact with reasons, context, and safe next steps.</p>
+        </article>
       </section>
 
-      <section class="workspace" id="scan">
-        <form id="scanForm" class="panel">
+      <section class="lab-grid" id="lab">
+        <form id="scanForm" class="panel scan-panel">
           <div class="panel-heading">
-            <span class="section-kicker">Input</span>
-            <h2>Scan suspicious content</h2>
-            <p>Paste the message exactly as received. Add a screenshot or document if you have one.</p>
+            <span class="section-kicker">Scanner</span>
+            <h2>Choose investigation mode</h2>
+            <p>Each mode tunes the interface for a specific threat type. The backend stays local and database-free.</p>
           </div>
 
-          <label for="textInput">Message, email, job offer, or notice</label>
+          <div class="mode-tabs" role="tablist" aria-label="Scan modes">
+            <button class="mode-tab active" type="button" data-mode="message">Scam Text</button>
+            <button class="mode-tab" type="button" data-mode="job">Fake Job</button>
+            <button class="mode-tab" type="button" data-mode="url">URL</button>
+            <button class="mode-tab" type="button" data-mode="media">AI Media</button>
+          </div>
+
+          <div class="mode-note" id="modeNote">
+            Paste suspicious text, email, SMS, or WhatsApp content.
+          </div>
+
+          <label for="textInput">Evidence text</label>
           <textarea id="textInput" placeholder="Paste suspicious content here..."></textarea>
 
-          <label for="fileInput">Optional screenshot or document</label>
+          <label for="fileInput">Optional screenshot, document, image, or video</label>
           <div class="file-control">
-            <input id="fileInput" type="file" />
+            <input id="fileInput" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.txt" />
             <span id="fileName">No file selected</span>
           </div>
 
           <div class="form-actions">
-            <button type="submit" id="scanButton">Run Scan</button>
+            <button type="submit" id="scanButton">Run investigation</button>
             <button type="button" class="secondary-button" id="clearButton">Clear</button>
           </div>
         </form>
 
+        <aside class="panel side-panel">
+          <div class="panel-heading">
+            <span class="section-kicker">Threat library</span>
+            <h2>Watchlist</h2>
+          </div>
+          <div class="watchlist">
+            <button type="button" data-template="kyc">KYC phishing</button>
+            <button type="button" data-template="job">Processing-fee job</button>
+            <button type="button" data-template="prize">Prize claim scam</button>
+            <button type="button" data-template="media">Deepfake video check</button>
+          </div>
+          <div class="mini-guide">
+            <h3>AI Detector scope</h3>
+            <p>
+              This MVP checks media metadata and suspicious naming patterns. A production upgrade would add frame extraction, face artifacts, audio sync, and a trained deepfake classifier.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="results-layout" id="results">
         <section class="panel result-panel">
           <div class="result-header">
             <div>
@@ -100,19 +152,49 @@
               <strong id="textScore">--</strong>
             </div>
             <div class="score-card">
-              <span class="label">File Risk</span>
+              <span class="label">Media/File Risk</span>
               <strong id="fileScore">--</strong>
             </div>
+            <div class="score-card">
+              <span class="label">Investigation Mode</span>
+              <strong id="modeScore">--</strong>
+            </div>
+          </div>
+
+          <h3>Risk categories</h3>
+          <div id="categoryGrid" class="category-grid">
+            <p class="empty-state">Run a scan to populate category meters.</p>
           </div>
 
           <h3>Evidence</h3>
           <ul id="evidenceList" class="evidence-list">
             <li>Run a scan to see evidence.</li>
           </ul>
+        </section>
 
-          <h3>Recommended Safety Context</h3>
+        <section class="panel evidence-panel">
+          <div class="panel-heading">
+            <span class="section-kicker">Highlighted evidence</span>
+            <h2>Signal map</h2>
+          </div>
+          <div id="highlightedText" class="highlight-box">Risky phrases, links, and money terms will be highlighted here.</div>
+
+          <h3>Recommended safety context</h3>
           <div id="contextList" class="context-list"></div>
         </section>
+      </section>
+
+      <section class="panel history-panel" id="history">
+        <div class="result-header">
+          <div>
+            <span class="section-kicker">Local history</span>
+            <h2>Recent scans</h2>
+          </div>
+          <button id="refreshHistory" class="secondary-button" type="button">Refresh</button>
+        </div>
+        <div id="historyList" class="history-list">
+          <p class="empty-state">No scans loaded yet.</p>
+        </div>
       </section>
 
       <section class="panel report-panel" id="report">

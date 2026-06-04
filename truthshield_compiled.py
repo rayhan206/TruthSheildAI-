@@ -71,27 +71,37 @@ HTML = r"""<!doctype html>
     <style>
 :root {
   color-scheme: light;
-  --color-bg: #f6f8fc;
+  --color-bg: #f4f7fb;
   --color-surface: #ffffff;
-  --color-surface-soft: #f9fbff;
-  --color-ink: #101828;
-  --color-muted: #667085;
-  --color-border: #d9e2ef;
-  --color-primary: #0b5fff;
-  --color-primary-dark: #0747b6;
+  --color-surface-soft: #f8fbff;
+  --color-ink: #0f172a;
+  --color-muted: #64748b;
+  --color-border: #d8e2f0;
+  --color-primary: #155eef;
+  --color-primary-dark: #0f46b8;
   --color-primary-soft: #eaf1ff;
   --color-accent: #00a88e;
+  --color-accent-soft: #e6fbf6;
   --color-danger: #b42318;
+  --color-danger-soft: #fff1f0;
   --color-warning: #b54708;
+  --color-warning-soft: #fff7ed;
   --color-safe: #157f3b;
+  --color-safe-soft: #ecfdf3;
+  --color-purple: #6941c6;
+  --color-purple-soft: #f4f0ff;
   --color-code: #0b1220;
-  --shadow-sm: 0 10px 30px rgba(16, 24, 40, 0.08);
-  --shadow-md: 0 24px 70px rgba(16, 24, 40, 0.12);
+  --shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 24px 70px rgba(15, 23, 42, 0.12);
   --radius: 8px;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -102,13 +112,15 @@ body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-body::selection {
-  background: var(--color-primary-soft);
-}
-
 a {
   color: inherit;
   text-decoration: none;
+}
+
+button,
+textarea,
+input {
+  font: inherit;
 }
 
 .site-bg {
@@ -116,14 +128,15 @@ a {
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(135deg, rgba(11, 95, 255, 0.08), transparent 34%),
-    linear-gradient(225deg, rgba(0, 168, 142, 0.08), transparent 36%);
+    linear-gradient(135deg, rgba(21, 94, 239, 0.1), transparent 32%),
+    linear-gradient(225deg, rgba(0, 168, 142, 0.1), transparent 34%),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.76));
 }
 
 .app-shell {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1220px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 24px 0 40px;
+  padding: 24px 0 44px;
 }
 
 .topbar {
@@ -167,13 +180,13 @@ a {
   padding: 6px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.74);
+  background: rgba(255, 255, 255, 0.78);
   box-shadow: var(--shadow-sm);
 }
 
 .nav-links a {
   color: var(--color-muted);
-  font-weight: 750;
+  font-weight: 760;
   padding: 9px 12px;
   border-radius: var(--radius);
 }
@@ -185,19 +198,24 @@ a {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: minmax(0, 1fr) 350px;
   gap: 28px;
   align-items: stretch;
   padding: 12px 0 22px;
 }
 
-.eyebrow {
-  margin: 0 0 8px;
+.hero-copy {
+  padding: 8px 0;
+}
+
+.eyebrow,
+.section-kicker {
+  display: block;
   color: var(--color-primary);
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 850;
   text-transform: uppercase;
-  font-size: 0.78rem;
-  letter-spacing: 0;
+  margin-bottom: 7px;
 }
 
 h1,
@@ -208,21 +226,30 @@ p {
 }
 
 h1 {
-  margin-bottom: 10px;
-  font-size: clamp(2rem, 5vw, 4.8rem);
-  line-height: 1;
+  margin-bottom: 12px;
+  font-size: clamp(2.4rem, 6vw, 5.4rem);
+  line-height: 0.96;
   letter-spacing: 0;
 }
 
+h2 {
+  margin-bottom: 8px;
+}
+
+h3 {
+  margin: 20px 0 10px;
+}
+
 .lede {
-  max-width: 720px;
+  max-width: 740px;
   color: var(--color-muted);
   font-size: 1.08rem;
-  line-height: 1.6;
+  line-height: 1.65;
   margin-bottom: 0;
 }
 
-.hero-actions {
+.hero-actions,
+.form-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
@@ -238,12 +265,11 @@ button {
   border-radius: var(--radius);
   background: var(--color-primary);
   color: white;
-  font: inherit;
   font-weight: 850;
   min-height: 46px;
   padding: 0 18px;
   cursor: pointer;
-  box-shadow: 0 10px 22px rgba(11, 95, 255, 0.18);
+  box-shadow: 0 10px 22px rgba(21, 94, 239, 0.18);
 }
 
 .primary-link:hover,
@@ -265,12 +291,17 @@ button:hover {
   color: var(--color-primary-dark);
 }
 
-.hero-card {
+.hero-card,
+.panel {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.86);
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-card {
   padding: 18px;
+  box-shadow: var(--shadow-md);
 }
 
 .status-pill,
@@ -282,14 +313,29 @@ button:hover {
   color: var(--color-primary);
   padding: 9px 12px;
   border-radius: var(--radius);
-  font-weight: 700;
+  font-weight: 760;
   white-space: nowrap;
+}
+
+.threat-meter {
+  height: 10px;
+  margin: 18px 0;
+  border-radius: 999px;
+  background: #e8eef7;
+  overflow: hidden;
+}
+
+.threat-meter span {
+  display: block;
+  height: 100%;
+  width: var(--meter);
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
 }
 
 .system-metrics {
   display: grid;
   gap: 10px;
-  margin: 18px 0 0;
+  margin: 0;
 }
 
 .system-metrics div {
@@ -314,45 +360,52 @@ button:hover {
   font-weight: 850;
 }
 
-.trust-strip {
+.capability-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0 0 18px;
+  gap: 12px;
+  margin: 2px 0 18px;
 }
 
-.trust-strip span {
+.capability-grid article {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.76);
-  color: var(--color-muted);
-  font-weight: 800;
-  padding: 12px 14px;
-  text-align: center;
+  background: rgba(255, 255, 255, 0.78);
+  padding: 16px;
 }
 
-.workspace {
+.capability-grid span {
+  color: var(--color-primary);
+  font-weight: 900;
+  font-size: 0.8rem;
+}
+
+.capability-grid strong {
+  display: block;
+  margin: 8px 0 6px;
+}
+
+.capability-grid p {
+  color: var(--color-muted);
+  line-height: 1.48;
+  margin-bottom: 0;
+}
+
+.lab-grid,
+.results-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.72fr);
   gap: 18px;
   align-items: start;
+  margin-top: 18px;
 }
 
 .panel {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
   padding: 22px;
 }
 
 .panel-heading {
   margin-bottom: 18px;
-}
-
-.panel-heading h2,
-.result-header h2 {
-  margin-bottom: 6px;
 }
 
 .panel-heading p {
@@ -361,29 +414,51 @@ button:hover {
   margin-bottom: 0;
 }
 
-.section-kicker {
-  display: block;
-  color: var(--color-primary);
-  font-size: 0.75rem;
-  font-weight: 850;
-  text-transform: uppercase;
-  margin-bottom: 6px;
+.mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mode-tab {
+  min-height: 42px;
+  padding: 0 10px;
+  background: var(--color-surface-soft);
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+.mode-tab.active {
+  background: var(--color-ink);
+  color: white;
+  border-color: var(--color-ink);
+}
+
+.mode-note {
+  color: var(--color-muted);
+  background: var(--color-primary-soft);
+  border: 1px solid #cadbff;
+  border-radius: var(--radius);
+  padding: 12px;
+  line-height: 1.45;
+  margin-bottom: 18px;
 }
 
 label {
   display: block;
-  font-weight: 750;
+  font-weight: 760;
   margin-bottom: 8px;
 }
 
 textarea {
   width: 100%;
-  min-height: 260px;
+  min-height: 245px;
   resize: vertical;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 14px;
-  font: inherit;
   line-height: 1.5;
   color: var(--color-ink);
   margin-bottom: 18px;
@@ -394,7 +469,7 @@ textarea {
 textarea:focus,
 input[type="file"]:focus {
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 4px rgba(11, 95, 255, 0.12);
+  box-shadow: 0 0 0 4px rgba(21, 94, 239, 0.12);
 }
 
 input[type="file"] {
@@ -419,15 +494,52 @@ input[type="file"] {
   font-size: 0.92rem;
 }
 
-.form-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
 button:disabled {
   opacity: 0.65;
   cursor: wait;
+}
+
+.side-panel {
+  position: sticky;
+  top: 16px;
+}
+
+.watchlist {
+  display: grid;
+  gap: 10px;
+}
+
+.watchlist button,
+.history-item {
+  justify-content: space-between;
+  min-height: auto;
+  padding: 13px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-ink);
+  box-shadow: none;
+}
+
+.watchlist button:hover,
+.history-item:hover {
+  background: var(--color-primary-soft);
+}
+
+.mini-guide {
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: var(--radius);
+  background: var(--color-purple-soft);
+}
+
+.mini-guide h3 {
+  margin-top: 0;
+}
+
+.mini-guide p {
+  color: var(--color-muted);
+  line-height: 1.5;
+  margin-bottom: 0;
 }
 
 .result-header {
@@ -438,18 +550,14 @@ button:disabled {
   margin-bottom: 18px;
 }
 
-.result-header h2 {
-  margin-bottom: 0;
-}
-
 .score-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-bottom: 22px;
 }
 
-.score-grid > div {
+.score-card {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 14px;
@@ -463,14 +571,82 @@ button:disabled {
   margin-bottom: 6px;
 }
 
-.score-grid strong {
-  font-size: 1.6rem;
+.score-card strong {
+  font-size: 1.45rem;
+}
+
+.category-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.category-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--color-surface-soft);
+  border: 1px solid var(--color-border);
+}
+
+.category-card div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.category-card span {
+  color: var(--color-muted);
+  font-weight: 760;
+}
+
+meter {
+  width: 100%;
+  height: 10px;
 }
 
 .evidence-list {
   padding-left: 18px;
   color: #344054;
   line-height: 1.55;
+}
+
+.highlight-box {
+  min-height: 170px;
+  max-height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  line-height: 1.7;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-soft);
+  padding: 14px;
+  color: #344054;
+}
+
+mark {
+  border-radius: 5px;
+  padding: 1px 4px;
+}
+
+.mark-urgency {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}
+
+.mark-money {
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
+}
+
+.mark-link {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-dark);
+}
+
+.mark-trust {
+  background: var(--color-purple-soft);
+  color: var(--color-purple);
 }
 
 .context-list {
@@ -489,14 +665,37 @@ button:disabled {
   margin: 0 0 6px;
 }
 
-.context-card p {
-  margin: 0;
+.context-card p,
+.context-card small {
+  display: block;
   color: var(--color-muted);
   line-height: 1.45;
 }
 
+.history-panel,
 .report-panel {
   margin-top: 18px;
+}
+
+.history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.history-item {
+  width: 100%;
+  text-align: left;
+}
+
+.history-item span,
+.history-item strong,
+.history-item small {
+  display: block;
+}
+
+.history-item small {
+  color: var(--color-muted);
+  margin-top: 3px;
 }
 
 pre {
@@ -511,6 +710,11 @@ pre {
   padding: 16px;
 }
 
+.empty-state {
+  color: var(--color-muted);
+  margin: 0;
+}
+
 .muted {
   color: var(--color-muted);
   background: #f2f4f7;
@@ -518,24 +722,36 @@ pre {
 
 .high {
   color: var(--color-danger);
-  background: #fff1f0;
+  background: var(--color-danger-soft);
 }
 
 .medium {
   color: var(--color-warning);
-  background: #fff7ed;
+  background: var(--color-warning-soft);
 }
 
 .low {
   color: var(--color-safe);
-  background: #ecfdf3;
+  background: var(--color-safe-soft);
 }
 
-@media (max-width: 860px) {
+@media (max-width: 980px) {
   .hero,
-  .workspace,
-  .trust-strip {
+  .lab-grid,
+  .results-layout,
+  .capability-grid {
     grid-template-columns: 1fr;
+  }
+
+  .side-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 700px) {
+  .app-shell {
+    width: min(100% - 24px, 1220px);
+    padding-top: 18px;
   }
 
   .topbar {
@@ -544,13 +760,19 @@ pre {
     margin-bottom: 28px;
   }
 
-  .nav-links {
+  .nav-links,
+  .mode-tabs,
+  .score-grid {
+    grid-template-columns: 1fr 1fr;
     width: 100%;
-    justify-content: space-between;
+  }
+
+  .nav-links {
+    display: grid;
   }
 
   h1 {
-    font-size: 2.7rem;
+    font-size: 2.8rem;
   }
 }
 
@@ -568,73 +790,125 @@ pre {
           </span>
         </a>
         <nav class="nav-links" aria-label="Primary">
-          <a href="#scan">Scan</a>
+          <a href="#lab">Lab</a>
+          <a href="#results">Results</a>
+          <a href="#history">History</a>
           <a href="#report">Report</a>
-          <a href="#system">System</a>
         </nav>
       </header>
 
       <section class="hero">
-        <div>
-          <p class="eyebrow">Privacy-first verification engine</p>
-          <h1>TruthShield Lite</h1>
+        <div class="hero-copy">
+          <p class="eyebrow">Digital forensics lab</p>
+          <h1>Verify before you trust.</h1>
           <p class="lede">
-            Analyze suspicious messages, fake job offers, phishing emails, screenshots, and documents before you click, pay, share, or trust.
+            Analyze scam messages, fake job offers, phishing links, suspicious documents, and AI-generated media in one privacy-first workspace.
           </p>
           <div class="hero-actions">
-            <a class="primary-link" href="#scan">Start scan</a>
-            <button class="ghost-button" id="sampleButton" type="button">Load sample</button>
+            <a class="primary-link" href="#lab">Open scanner</a>
+            <button class="ghost-button" id="sampleButton" type="button">Load scam sample</button>
           </div>
         </div>
         <aside class="hero-card" id="system">
           <div class="status-pill" id="healthStatus">Checking backend...</div>
+          <div class="threat-meter" aria-label="Threat intelligence readiness">
+            <span style="--meter: 82%"></span>
+          </div>
           <dl class="system-metrics">
             <div>
               <dt>Storage</dt>
               <dd>Local-first</dd>
             </div>
             <div>
-              <dt>Mode</dt>
-              <dd>No database</dd>
+              <dt>AI Media</dt>
+              <dd>Detector MVP</dd>
             </div>
             <div>
-              <dt>Output</dt>
-              <dd>Evidence report</dd>
+              <dt>Reports</dt>
+              <dd>Export-ready</dd>
             </div>
           </dl>
         </aside>
       </section>
 
-      <section class="trust-strip" aria-label="Capabilities">
-        <span>Phishing signals</span>
-        <span>Fake job patterns</span>
-        <span>Suspicious links</span>
-        <span>Document risk</span>
+      <section class="capability-grid" aria-label="Capabilities">
+        <article>
+          <span>01</span>
+          <strong>Message intelligence</strong>
+          <p>Pressure, payment, impersonation, and suspicious wording signals.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <strong>URL risk scan</strong>
+          <p>Fake login paths, risky domains, shortened links, and brand mismatch hints.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <strong>AI media detector</strong>
+          <p>Image/video metadata and deepfake-style filename signal analysis.</p>
+        </article>
+        <article>
+          <span>04</span>
+          <strong>Evidence report</strong>
+          <p>Markdown artifact with reasons, context, and safe next steps.</p>
+        </article>
       </section>
 
-      <section class="workspace" id="scan">
-        <form id="scanForm" class="panel">
+      <section class="lab-grid" id="lab">
+        <form id="scanForm" class="panel scan-panel">
           <div class="panel-heading">
-            <span class="section-kicker">Input</span>
-            <h2>Scan suspicious content</h2>
-            <p>Paste the message exactly as received. Add a screenshot or document if you have one.</p>
+            <span class="section-kicker">Scanner</span>
+            <h2>Choose investigation mode</h2>
+            <p>Each mode tunes the interface for a specific threat type. The backend stays local and database-free.</p>
           </div>
 
-          <label for="textInput">Message, email, job offer, or notice</label>
+          <div class="mode-tabs" role="tablist" aria-label="Scan modes">
+            <button class="mode-tab active" type="button" data-mode="message">Scam Text</button>
+            <button class="mode-tab" type="button" data-mode="job">Fake Job</button>
+            <button class="mode-tab" type="button" data-mode="url">URL</button>
+            <button class="mode-tab" type="button" data-mode="media">AI Media</button>
+          </div>
+
+          <div class="mode-note" id="modeNote">
+            Paste suspicious text, email, SMS, or WhatsApp content.
+          </div>
+
+          <label for="textInput">Evidence text</label>
           <textarea id="textInput" placeholder="Paste suspicious content here..."></textarea>
 
-          <label for="fileInput">Optional screenshot or document</label>
+          <label for="fileInput">Optional screenshot, document, image, or video</label>
           <div class="file-control">
-            <input id="fileInput" type="file" />
+            <input id="fileInput" type="file" accept="image/*,video/*,.pdf,.doc,.docx,.txt" />
             <span id="fileName">No file selected</span>
           </div>
 
           <div class="form-actions">
-            <button type="submit" id="scanButton">Run Scan</button>
+            <button type="submit" id="scanButton">Run investigation</button>
             <button type="button" class="secondary-button" id="clearButton">Clear</button>
           </div>
         </form>
 
+        <aside class="panel side-panel">
+          <div class="panel-heading">
+            <span class="section-kicker">Threat library</span>
+            <h2>Watchlist</h2>
+          </div>
+          <div class="watchlist">
+            <button type="button" data-template="kyc">KYC phishing</button>
+            <button type="button" data-template="job">Processing-fee job</button>
+            <button type="button" data-template="prize">Prize claim scam</button>
+            <button type="button" data-template="media">Deepfake video check</button>
+          </div>
+          <div class="mini-guide">
+            <h3>AI Detector scope</h3>
+            <p>
+              This MVP checks media metadata and suspicious naming patterns. A production upgrade would add frame extraction, face artifacts, audio sync, and a trained deepfake classifier.
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="results-layout" id="results">
         <section class="panel result-panel">
           <div class="result-header">
             <div>
@@ -650,19 +924,49 @@ pre {
               <strong id="textScore">--</strong>
             </div>
             <div class="score-card">
-              <span class="label">File Risk</span>
+              <span class="label">Media/File Risk</span>
               <strong id="fileScore">--</strong>
             </div>
+            <div class="score-card">
+              <span class="label">Investigation Mode</span>
+              <strong id="modeScore">--</strong>
+            </div>
+          </div>
+
+          <h3>Risk categories</h3>
+          <div id="categoryGrid" class="category-grid">
+            <p class="empty-state">Run a scan to populate category meters.</p>
           </div>
 
           <h3>Evidence</h3>
           <ul id="evidenceList" class="evidence-list">
             <li>Run a scan to see evidence.</li>
           </ul>
+        </section>
 
-          <h3>Recommended Safety Context</h3>
+        <section class="panel evidence-panel">
+          <div class="panel-heading">
+            <span class="section-kicker">Highlighted evidence</span>
+            <h2>Signal map</h2>
+          </div>
+          <div id="highlightedText" class="highlight-box">Risky phrases, links, and money terms will be highlighted here.</div>
+
+          <h3>Recommended safety context</h3>
           <div id="contextList" class="context-list"></div>
         </section>
+      </section>
+
+      <section class="panel history-panel" id="history">
+        <div class="result-header">
+          <div>
+            <span class="section-kicker">Local history</span>
+            <h2>Recent scans</h2>
+          </div>
+          <button id="refreshHistory" class="secondary-button" type="button">Refresh</button>
+        </div>
+        <div id="historyList" class="history-list">
+          <p class="empty-state">No scans loaded yet.</p>
+        </div>
       </section>
 
       <section class="panel report-panel" id="report">
@@ -686,6 +990,7 @@ const healthStatus = document.querySelector("#healthStatus");
 const riskBadge = document.querySelector("#riskBadge");
 const textScore = document.querySelector("#textScore");
 const fileScore = document.querySelector("#fileScore");
+const modeScore = document.querySelector("#modeScore");
 const evidenceList = document.querySelector("#evidenceList");
 const contextList = document.querySelector("#contextList");
 const markdownReport = document.querySelector("#markdownReport");
@@ -693,12 +998,35 @@ const copyReport = document.querySelector("#copyReport");
 const sampleButton = document.querySelector("#sampleButton");
 const clearButton = document.querySelector("#clearButton");
 const fileName = document.querySelector("#fileName");
+const modeNote = document.querySelector("#modeNote");
+const modeTabs = document.querySelectorAll(".mode-tab");
+const categoryGrid = document.querySelector("#categoryGrid");
+const highlightedText = document.querySelector("#highlightedText");
+const historyList = document.querySelector("#historyList");
+const refreshHistory = document.querySelector("#refreshHistory");
+const watchlistButtons = document.querySelectorAll(".watchlist button");
 
-const sampleText = `Congratulations! You are selected for a remote data analyst job with salary 90000 per month.
+let activeMode = "message";
+
+const samples = {
+  message: `Your bank account is suspended. Verify now at http://login-bank-support.xyz and pay Rs 499 to avoid final blocking.`,
+  job: `Congratulations! You are selected for a remote data analyst job with salary 90000 per month.
 
 To confirm your joining, pay Rs 2999 processing fee today only and verify your profile at http://verify-job.xyz.
 
-This offer is confidential and no interview is required.`;
+This offer is confidential and no interview is required.`,
+  url: `Claim your refund now: https://sbi-verify-login.xyz/free/refund. This link expires today only.`,
+  media: `AI media detector mode: upload a video or image and add any context here. Example: "This celebrity investment video asks me to pay crypto today."`,
+  kyc: `Your KYC is expired. Account will be blocked today. Verify now at http://kyc-bank-login.xyz and upload Aadhaar details immediately.`,
+  prize: `Congratulations! You won a phone worth Rs 80000. Pay Rs 999 processing fee today only to claim your prize.`,
+};
+
+const modeHelp = {
+  message: "Paste suspicious text, email, SMS, or WhatsApp content.",
+  job: "Paste the offer letter text, recruiter message, salary promise, or payment request.",
+  url: "Paste the full URL or message containing the link. Add claimed brand context if known.",
+  media: "Upload an image or video. Add context such as who appears, what is claimed, and what action is requested.",
+};
 
 async function checkHealth() {
   try {
@@ -713,12 +1041,13 @@ async function checkHealth() {
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   scanButton.disabled = true;
-  scanButton.textContent = "Scanning...";
+  scanButton.textContent = "Investigating...";
 
   try {
     const file = fileInput.files[0];
+    const modePrefix = `[Mode: ${activeMode.toUpperCase()}]\n`;
     const payload = {
-      text: textInput.value,
+      text: modePrefix + textInput.value,
       file: file ? await fileToPayload(file) : null,
     };
 
@@ -734,34 +1063,53 @@ form.addEventListener("submit", async (event) => {
 
     const result = await response.json();
     renderResult(result);
+    loadHistory();
   } catch (error) {
     alert(error.message);
   } finally {
     scanButton.disabled = false;
-    scanButton.textContent = "Run Scan";
+    scanButton.textContent = "Run investigation";
   }
 });
 
+modeTabs.forEach((tab) => {
+  tab.addEventListener("click", () => {
+    activeMode = tab.dataset.mode;
+    modeTabs.forEach((item) => item.classList.remove("active"));
+    tab.classList.add("active");
+    modeNote.textContent = modeHelp[activeMode];
+    modeScore.textContent = labelMode(activeMode);
+  });
+});
+
 sampleButton.addEventListener("click", () => {
-  textInput.value = sampleText;
+  textInput.value = samples[activeMode] || samples.message;
   textInput.focus();
+});
+
+watchlistButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const template = button.dataset.template;
+    const nextMode = template === "media" ? "media" : template === "job" ? "job" : "message";
+    setMode(nextMode);
+    textInput.value = samples[template] || samples.message;
+    textInput.focus();
+  });
 });
 
 clearButton.addEventListener("click", () => {
   textInput.value = "";
   fileInput.value = "";
   fileName.textContent = "No file selected";
-  riskBadge.textContent = "Waiting";
-  riskBadge.className = "risk-badge muted";
-  textScore.textContent = "--";
-  fileScore.textContent = "--";
-  evidenceList.innerHTML = "<li>Run a scan to see evidence.</li>";
-  contextList.innerHTML = "";
-  markdownReport.textContent = "No report yet.";
+  resetResults();
 });
 
 fileInput.addEventListener("change", () => {
-  fileName.textContent = fileInput.files[0]?.name || "No file selected";
+  const file = fileInput.files[0];
+  fileName.textContent = file ? `${file.name} (${formatBytes(file.size)})` : "No file selected";
+  if (file?.type.startsWith("video/") || /\.(mp4|mov|webm|avi|mkv)$/i.test(file?.name || "")) {
+    setMode("media");
+  }
 });
 
 copyReport.addEventListener("click", async () => {
@@ -772,33 +1120,148 @@ copyReport.addEventListener("click", async () => {
   }, 1200);
 });
 
+refreshHistory.addEventListener("click", loadHistory);
+
 function renderResult(result) {
   const level = result.ml_result.risk_level;
   riskBadge.textContent = `${level} Risk`;
   riskBadge.className = `risk-badge ${level.toLowerCase()}`;
-
   textScore.textContent = `${result.ml_result.risk_score}/100`;
   fileScore.textContent = `${result.dl_result.visual_risk_score}/100`;
+  modeScore.textContent = labelMode(activeMode);
 
+  renderCategories(result);
+  renderEvidence(result);
+  renderContext(result.rag_context);
+  renderHighlightedText(result.input_text, result.features);
+
+  markdownReport.textContent = result.report_markdown;
+}
+
+function renderCategories(result) {
+  const features = result.features;
+  const categories = [
+    ["Urgency", Math.min(features.urgency_terms.length * 28, 100)],
+    ["Money", Math.min((features.money_terms.length + features.money_mention_count) * 24, 100)],
+    ["Link", Math.min((features.url_count * 24) + (features.suspicious_url_count * 38), 100)],
+    ["Identity", Math.min(features.trust_terms.length * 26, 100)],
+    ["Media", result.dl_result.visual_risk_score],
+  ];
+
+  categoryGrid.innerHTML = "";
+  categories.forEach(([name, value]) => {
+    const card = document.createElement("article");
+    card.className = "category-card";
+    card.innerHTML = `
+      <div>
+        <strong>${name}</strong>
+        <span>${value}/100</span>
+      </div>
+      <meter min="0" max="100" value="${value}"></meter>
+    `;
+    categoryGrid.appendChild(card);
+  });
+}
+
+function renderEvidence(result) {
   evidenceList.innerHTML = "";
   [...result.ml_result.top_reasons, ...result.dl_result.signals].forEach((reason) => {
     const li = document.createElement("li");
     li.textContent = reason;
     evidenceList.appendChild(li);
   });
+}
 
+function renderContext(contexts) {
   contextList.innerHTML = "";
-  result.rag_context.forEach((context) => {
+  contexts.forEach((context) => {
     const card = document.createElement("article");
     card.className = "context-card";
     card.innerHTML = `
       <h4>${escapeHtml(context.title)}</h4>
       <p>${escapeHtml(context.description)}</p>
+      <small>${escapeHtml(context.recommended_action || "Verify through official channels.")}</small>
     `;
     contextList.appendChild(card);
   });
+}
 
-  markdownReport.textContent = result.report_markdown;
+function renderHighlightedText(text, features) {
+  const raw = text.replace(/^\[Mode: [A-Z]+\]\n/, "") || "No text submitted.";
+  let escaped = escapeHtml(raw);
+  const terms = [
+    ...features.urgency_terms.map((term) => [term, "mark-urgency"]),
+    ...features.money_terms.map((term) => [term, "mark-money"]),
+    ...features.trust_terms.map((term) => [term, "mark-trust"]),
+    ...features.urls.map((term) => [term, "mark-link"]),
+  ];
+
+  terms
+    .sort((a, b) => b[0].length - a[0].length)
+    .forEach(([term, className]) => {
+      if (!term) return;
+      const safeTerm = escapeRegExp(escapeHtml(term));
+      escaped = escaped.replace(new RegExp(safeTerm, "gi"), (match) => `<mark class="${className}">${match}</mark>`);
+    });
+
+  highlightedText.innerHTML = escaped;
+}
+
+async function loadHistory() {
+  try {
+    const response = await fetch("/api/scans");
+    const data = await response.json();
+    const scans = data.scans || [];
+    if (!scans.length) {
+      historyList.innerHTML = `<p class="empty-state">No local scans yet.</p>`;
+      return;
+    }
+
+    historyList.innerHTML = "";
+    scans.slice(0, 8).forEach((scan) => {
+      const item = document.createElement("button");
+      item.className = "history-item";
+      item.type = "button";
+      item.innerHTML = `
+        <span>
+          <strong>${scan.scan_id}</strong>
+          <small>${scan.visual_risk_level}</small>
+        </span>
+        <b class="${scan.risk_level.toLowerCase()}">${scan.risk_score}/100</b>
+      `;
+      item.addEventListener("click", () => openHistory(scan.scan_id));
+      historyList.appendChild(item);
+    });
+  } catch {
+    historyList.innerHTML = `<p class="empty-state">Could not load local history.</p>`;
+  }
+}
+
+async function openHistory(scanId) {
+  const response = await fetch(`/api/scans/${scanId}`);
+  if (!response.ok) return;
+  renderResult(await response.json());
+  document.querySelector("#results").scrollIntoView({ behavior: "smooth" });
+}
+
+function setMode(mode) {
+  activeMode = mode;
+  modeTabs.forEach((item) => item.classList.toggle("active", item.dataset.mode === mode));
+  modeNote.textContent = modeHelp[mode];
+  modeScore.textContent = labelMode(mode);
+}
+
+function resetResults() {
+  riskBadge.textContent = "Waiting";
+  riskBadge.className = "risk-badge muted";
+  textScore.textContent = "--";
+  fileScore.textContent = "--";
+  modeScore.textContent = labelMode(activeMode);
+  evidenceList.innerHTML = "<li>Run a scan to see evidence.</li>";
+  contextList.innerHTML = "";
+  categoryGrid.innerHTML = `<p class="empty-state">Run a scan to populate category meters.</p>`;
+  highlightedText.textContent = "Risky phrases, links, and money terms will be highlighted here.";
+  markdownReport.textContent = "No report yet.";
 }
 
 function fileToPayload(file) {
@@ -817,6 +1280,26 @@ function fileToPayload(file) {
   });
 }
 
+function labelMode(mode) {
+  return {
+    message: "Scam Text",
+    job: "Fake Job",
+    url: "URL",
+    media: "AI Media",
+  }[mode] || "Scanner";
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return "0 B";
+  const units = ["B", "KB", "MB", "GB"];
+  const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+  return `${(bytes / 1024 ** index).toFixed(index ? 1 : 0)} ${units[index]}`;
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -827,6 +1310,8 @@ function escapeHtml(value) {
 }
 
 checkHealth();
+setMode(activeMode);
+loadHistory();
 
     </script>
   </body>
@@ -955,10 +1440,16 @@ def analyze_uploaded_file(file_meta, file_bytes):
     content_type = file_meta.get("content_type", "")
     score = 10
     signals = []
+    video_exts = [".mp4", ".mov", ".webm", ".avi", ".mkv"]
+    image_exts = [".png", ".jpg", ".jpeg", ".webp"]
 
-    if any(name.endswith(ext) for ext in [".png", ".jpg", ".jpeg", ".webp"]):
+    if any(name.endswith(ext) for ext in video_exts) or content_type.startswith("video/"):
+        score += 24
+        signals.append("Video uploaded for AI-media/deepfake-style screening.")
+        signals.append("MVP detector checks metadata and naming signals; production upgrade should analyze frames and audio sync.")
+    elif any(name.endswith(ext) for ext in image_exts):
         score += 15
-        signals.append("Image/screenshot uploaded for visual trust analysis.")
+        signals.append("Image/screenshot uploaded for visual trust and AI-media screening.")
     elif any(name.endswith(ext) for ext in [".pdf", ".doc", ".docx"]):
         score += 8
         signals.append("Document-like file uploaded; verify source and metadata.")
@@ -974,15 +1465,26 @@ def analyze_uploaded_file(file_meta, file_bytes):
         signals.append("Large file; manual review recommended before sharing or opening.")
 
     matched = [
-        token for token in ["offer", "prize", "claim", "kyc", "verify", "urgent", "payment", "invoice"]
+        token for token in [
+            "offer", "prize", "claim", "kyc", "verify", "urgent", "payment", "invoice",
+            "deepfake", "ai", "synthetic", "clone", "celebrity", "crypto", "investment",
+        ]
         if token in name
     ]
     if matched:
         score += min(len(matched) * 9, 24)
         signals.append("Filename contains risk-related words: " + ", ".join(matched))
-    if "image" in content_type and not any(name.endswith(ext) for ext in [".png", ".jpg", ".jpeg", ".webp"]):
+
+    if any(token in name for token in ["face", "voice", "clone", "celebrity", "investment"]):
+        score += 16
+        signals.append("Media filename suggests impersonation, voice/face cloning, or investment persuasion context.")
+
+    if "image" in content_type and not any(name.endswith(ext) for ext in image_exts):
         score += 10
         signals.append("Content type and extension do not clearly match.")
+    if "video" in content_type and not any(name.endswith(ext) for ext in video_exts):
+        score += 10
+        signals.append("Video content type and extension do not clearly match.")
 
     score = max(0, min(score, 100))
     level = "High" if score >= 70 else "Medium" if score >= 40 else "Low"
