@@ -1,4 +1,13 @@
 def build_report(scan_id, input_text, features, ml_result, dl_result, rag_context, file_meta):
+    media_mode = input_text.startswith("[Mode: MEDIA]") or dl_result.get("detector_mode") == "frame-classifier"
+    media_score = dl_result.get("visual_risk_score", 0)
+    if media_score >= 70:
+        media_verdict = "likely AI-generated"
+    elif media_score >= 40:
+        media_verdict = "uncertain for AI generation"
+    else:
+        media_verdict = "not showing strong AI-generation signals"
+
     lines = [
         f"# TruthShield Lite Risk Report",
         "",
@@ -10,6 +19,17 @@ def build_report(scan_id, input_text, features, ml_result, dl_result, rag_contex
         f"- Visual/file risk: **{dl_result['visual_risk_level']}** ({dl_result['visual_risk_score']}/100)",
         f"- Media detector: `{dl_result.get('detector_mode', 'not-applicable')}`",
         f"- Media model: `{dl_result.get('model_name', 'Not analyzed')}`",
+        "",
+        "## Quick Assessment",
+        "",
+        (
+            f"- TruthShield detects the uploaded media as **{media_verdict}** ({media_score}/100)."
+            if media_mode else
+            f"- TruthShield rated the submitted text as **{ml_result['risk_level']} scam risk** ({ml_result['risk_score']}/100)."
+        ),
+        f"- Money/payment risk is {'present' if features['money_terms'] or features['money_mention_count'] else 'low'}.",
+        f"- Link risk is {'present' if features['suspicious_url_count'] else 'low'}.",
+        f"- Identity/impersonation language risk is {'present' if features['trust_terms'] else 'low'}.",
         "",
         "## Key Reasons",
         "",

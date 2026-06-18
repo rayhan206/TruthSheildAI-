@@ -24,6 +24,7 @@ const watchlistButtons = document.querySelectorAll(".watchlist button");
 const frameSection = document.querySelector("#frameSection");
 const frameGallery = document.querySelector("#frameGallery");
 const frameSummary = document.querySelector("#frameSummary");
+const assessmentSummary = document.querySelector("#assessmentSummary");
 
 let activeMode = "message";
 
@@ -142,20 +143,67 @@ copyReport.addEventListener("click", async () => {
 refreshHistory.addEventListener("click", loadHistory);
 
 function renderResult(result) {
-  const level = result.ml_result.risk_level;
-  riskBadge.textContent = `${level} Risk`;
-  riskBadge.className = `risk-badge ${level.toLowerCase()}`;
+  const mediaMode = isMediaResult(result);
+  const mediaScoreValue = result.dl_result.visual_risk_score;
+  const level = mediaMode ? mediaVerdict(mediaScoreValue) : result.ml_result.risk_level;
+  riskBadge.textContent = mediaMode ? level.label : `${level} Risk`;
+  riskBadge.className = `risk-badge ${mediaMode ? level.className : level.toLowerCase()}`;
   textScore.textContent = `${result.ml_result.risk_score}/100`;
   fileScore.textContent = `${result.dl_result.visual_risk_score}/100`;
   modeScore.textContent = labelMode(activeMode);
 
   renderCategories(result);
+  renderAssessment(result, mediaMode);
   renderEvidence(result);
   renderFrames(result.dl_result);
   renderContext(result.rag_context);
   renderHighlightedText(result.input_text, result.features);
 
   markdownReport.textContent = result.report_markdown;
+}
+
+function renderAssessment(result, mediaMode) {
+  const features = result.features;
+  const mediaScoreValue = result.dl_result.visual_risk_score;
+  const textRisk = result.ml_result.risk_level.toLowerCase();
+  const mediaStatement = mediaMode
+    ? mediaScoreValue >= 70
+      ? `TruthShield detects this media as likely AI-generated with a ${mediaScoreValue}/100 likelihood score.`
+      : mediaScoreValue >= 40
+        ? `TruthShield found uncertain AI-generation signals in this media (${mediaScoreValue}/100).`
+        : `TruthShield did not find strong AI-generation signals in this media (${mediaScoreValue}/100).`
+    : `TruthShield rated the submitted text as ${textRisk} scam risk (${result.ml_result.risk_score}/100).`;
+
+  const moneyStatement = features.money_terms.length || features.money_mention_count
+    ? "Money or payment language was detected and should be checked carefully."
+    : "Money and payment risk is low; no strong financial request was detected.";
+  const linkStatement = features.suspicious_url_count
+    ? "A suspicious link was detected and should not be opened before verification."
+    : "Link risk is low; no suspicious URL pattern was detected.";
+  const identityStatement = features.trust_terms.length
+    ? "Some identity or trust-building language was detected."
+    : "Identity and impersonation language risk is low in the submitted context.";
+
+  assessmentSummary.innerHTML = `
+    <span class="section-kicker">Assessment summary</span>
+    <p><strong>${escapeHtml(mediaStatement)}</strong></p>
+    <p>${escapeHtml(moneyStatement)}</p>
+    <p>${escapeHtml(linkStatement)}</p>
+    <p>${escapeHtml(identityStatement)}</p>
+  `;
+}
+
+function isMediaResult(result) {
+  return activeMode === "media"
+    || result.dl_result.detector_mode === "frame-classifier"
+    || Boolean(result.dl_result.frame_results?.length)
+    || /^\[Mode: MEDIA\]/.test(result.input_text || "");
+}
+
+function mediaVerdict(score) {
+  if (score >= 70) return { label: "Likely AI-Generated", className: "high" };
+  if (score >= 40) return { label: "AI Result Uncertain", className: "medium" };
+  return { label: "No Strong AI Signal", className: "low" };
 }
 
 function renderFrames(mediaResult) {
@@ -307,6 +355,10 @@ function resetResults() {
   contextList.innerHTML = "";
   categoryGrid.innerHTML = `<p class="empty-state">Run a scan to populate category meters.</p>`;
   highlightedText.textContent = "Risky phrases, links, and money terms will be highlighted here.";
+  assessmentSummary.innerHTML = `
+    <span class="section-kicker">Assessment summary</span>
+    <p>Run a scan to generate a plain-English assessment.</p>
+  `;
   frameSection.hidden = true;
   frameGallery.innerHTML = "";
   markdownReport.textContent = "No report yet.";
