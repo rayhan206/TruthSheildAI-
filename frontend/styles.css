@@ -540,6 +540,66 @@ meter {
   line-height: 1.55;
 }
 
+.frame-section {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.frame-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.frame-heading h3 {
+  margin: 0;
+}
+
+.frame-heading span {
+  color: var(--color-muted);
+  font-size: 0.88rem;
+}
+
+.frame-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.frame-card {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-soft);
+}
+
+.frame-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--color-code);
+}
+
+.frame-card div {
+  display: grid;
+  gap: 3px;
+  padding: 9px;
+}
+
+.frame-card strong {
+  color: var(--color-danger);
+  font-size: 0.83rem;
+}
+
+.frame-card span {
+  color: var(--color-muted);
+  font-size: 0.78rem;
+}
+
 .highlight-box {
   min-height: 170px;
   max-height: 360px;
@@ -702,5 +762,9 @@ pre {
 
   h1 {
     font-size: 2.8rem;
+  }
+
+  .frame-gallery {
+    grid-template-columns: 1fr 1fr;
   }
 }

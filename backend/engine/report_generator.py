@@ -8,6 +8,8 @@ def build_report(scan_id, input_text, features, ml_result, dl_result, rag_contex
         "",
         f"- Text risk: **{ml_result['risk_level']}** ({ml_result['risk_score']}/100)",
         f"- Visual/file risk: **{dl_result['visual_risk_level']}** ({dl_result['visual_risk_score']}/100)",
+        f"- Media detector: `{dl_result.get('detector_mode', 'not-applicable')}`",
+        f"- Media model: `{dl_result.get('model_name', 'Not analyzed')}`",
         "",
         "## Key Reasons",
         "",
@@ -17,6 +19,17 @@ def build_report(scan_id, input_text, features, ml_result, dl_result, rag_contex
         lines.append(f"- {reason}")
     for signal in dl_result["signals"]:
         lines.append(f"- {signal}")
+
+    content_analysis = dl_result.get("content_analysis") or {}
+    if content_analysis.get("available"):
+        lines.extend([
+            "",
+            "## Frame Analysis",
+            "",
+            f"- Sampled frames: {content_analysis['sampled_frames']}",
+            f"- Average frame AI likelihood: {content_analysis['average_frame_score']}%",
+            f"- Suspicious frame ratio: {content_analysis['suspicious_frame_ratio']}%",
+        ])
 
     lines.extend([
         "",
@@ -73,4 +86,3 @@ def build_report(scan_id, input_text, features, ml_result, dl_result, rag_contex
     ])
 
     return "\n".join(lines)
-

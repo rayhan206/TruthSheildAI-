@@ -1,3 +1,9 @@
+try:
+    from .media_detector import analyze_media_content
+except ImportError:
+    from engine.media_detector import analyze_media_content
+
+
 def analyze_uploaded_file(file_meta, file_bytes):
     if not file_meta or file_bytes is None:
         return {
@@ -56,7 +62,24 @@ def analyze_uploaded_file(file_meta, file_bytes):
         score += 10
         signals.append("Video content type and extension do not clearly match.")
 
-    score = max(0, min(score, 100))
+    heuristic_score = max(0, min(score, 100))
+    content_result = analyze_media_content(file_meta)
+
+    if content_result and content_result.get("available"):
+        content_score = content_result["content_score"]
+        score = round((content_score * 0.90) + (heuristic_score * 0.10))
+        signals.insert(
+            0,
+            f"Frame model sampled {content_result['sampled_frames']} frames; "
+            f"average AI likelihood was {content_result['average_frame_score']}%.",
+        )
+        model_name = content_result["model_name"]
+    else:
+        score = heuristic_score
+        model_name = "TruthShield metadata heuristic fallback"
+        if content_result:
+            signals.insert(0, content_result.get("error", "AI content model is unavailable."))
+
     if score >= 70:
         level = "High"
     elif score >= 40:
@@ -67,6 +90,10 @@ def analyze_uploaded_file(file_meta, file_bytes):
     return {
         "visual_risk_score": score,
         "visual_risk_level": level,
-        "model_name": "TruthShield visual heuristic baseline v1",
+        "model_name": model_name,
+        "detector_mode": content_result.get("detector_mode") if content_result else "not-applicable",
+        "content_analysis": content_result,
+        "heuristic_score": heuristic_score,
+        "frame_results": content_result.get("frame_results", []) if content_result else [],
         "signals": signals,
     }

@@ -9,7 +9,9 @@ TruthShield Lite is a database-free full-stack project. Each scan is stored as a
 - Accepts pasted suspicious text, job offers, emails, or messages.
 - Optionally accepts an uploaded image, screenshot, or document-like file.
 - Provides investigation modes for scam text, fake jobs, suspicious URLs, and AI media.
-- Includes an AI-media detector MVP for image/video metadata and deepfake-style naming signals.
+- Samples video frames and runs a pretrained AI-image classifier when optional AI dependencies are installed.
+- Combines 70% average frame likelihood with 30% suspicious-frame ratio, then limits metadata to 10% of the final score.
+- Displays the six most suspicious frames with timestamps and per-frame likelihoods.
 - Shows risk category meters, highlighted evidence, local scan history, and a threat watchlist.
 - Extracts text/security features.
 - Produces an ML-style risk score.
@@ -43,6 +45,37 @@ Open:
 ```txt
 http://localhost:8000
 ```
+
+## Enable Frame-Based AI Media Detection
+
+The basic app remains dependency-free. To enable video frame analysis, run once:
+
+```powershell
+./scripts/install-ai.ps1
+```
+
+Or install manually:
+
+```powershell
+python -m pip install -r requirements-ai.txt
+```
+
+Then restart TruthShield:
+
+```powershell
+python -B backend/app.py
+```
+
+The first image/video scan downloads the configured Hugging Face model and can take longer. Later scans reuse the local model cache.
+
+The default model is `umm-maybe/AI-image-detector`. Override it with:
+
+```powershell
+$env:TRUTHSHIELD_AI_MODEL="your-compatible-image-classification-model"
+python -B backend/app.py
+```
+
+This produces an AI-generation likelihood, not proof that media is fake. Animation, CGI, heavy compression, and unseen generators can still cause incorrect results.
 
 ## Single-File Runnable Edition
 

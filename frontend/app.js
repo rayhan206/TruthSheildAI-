@@ -21,6 +21,9 @@ const highlightedText = document.querySelector("#highlightedText");
 const historyList = document.querySelector("#historyList");
 const refreshHistory = document.querySelector("#refreshHistory");
 const watchlistButtons = document.querySelectorAll(".watchlist button");
+const frameSection = document.querySelector("#frameSection");
+const frameGallery = document.querySelector("#frameGallery");
+const frameSummary = document.querySelector("#frameSummary");
 
 let activeMode = "message";
 
@@ -148,10 +151,37 @@ function renderResult(result) {
 
   renderCategories(result);
   renderEvidence(result);
+  renderFrames(result.dl_result);
   renderContext(result.rag_context);
   renderHighlightedText(result.input_text, result.features);
 
   markdownReport.textContent = result.report_markdown;
+}
+
+function renderFrames(mediaResult) {
+  const frames = mediaResult.frame_results || [];
+  const analysis = mediaResult.content_analysis || {};
+  if (!frames.length) {
+    frameSection.hidden = true;
+    frameGallery.innerHTML = "";
+    return;
+  }
+
+  frameSection.hidden = false;
+  frameSummary.textContent = `${analysis.sampled_frames || frames.length} sampled`;
+  frameGallery.innerHTML = "";
+  frames.forEach((frame) => {
+    const card = document.createElement("article");
+    card.className = "frame-card";
+    card.innerHTML = `
+      <img src="${frame.preview}" alt="Sampled video frame at ${frame.timestamp_seconds} seconds" />
+      <div>
+        <strong>${frame.ai_score}% AI likelihood</strong>
+        <span>${frame.timestamp_seconds}s</span>
+      </div>
+    `;
+    frameGallery.appendChild(card);
+  });
 }
 
 function renderCategories(result) {
@@ -277,6 +307,8 @@ function resetResults() {
   contextList.innerHTML = "";
   categoryGrid.innerHTML = `<p class="empty-state">Run a scan to populate category meters.</p>`;
   highlightedText.textContent = "Risky phrases, links, and money terms will be highlighted here.";
+  frameSection.hidden = true;
+  frameGallery.innerHTML = "";
   markdownReport.textContent = "No report yet.";
 }
 

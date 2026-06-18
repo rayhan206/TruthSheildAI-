@@ -27,6 +27,11 @@ import traceback
 ROOT = Path(__file__).resolve().parent
 SCANS_ROOT = ROOT / "storage" / "scans"
 
+try:
+    from backend.engine.media_detector import analyze_media_content
+except ImportError:
+    analyze_media_content = None
+
 
 SCAM_PATTERNS = [
     {
@@ -611,6 +616,66 @@ meter {
   line-height: 1.55;
 }
 
+.frame-section {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+}
+
+.frame-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.frame-heading h3 {
+  margin: 0;
+}
+
+.frame-heading span {
+  color: var(--color-muted);
+  font-size: 0.88rem;
+}
+
+.frame-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.frame-card {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-soft);
+}
+
+.frame-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--color-code);
+}
+
+.frame-card div {
+  display: grid;
+  gap: 3px;
+  padding: 9px;
+}
+
+.frame-card strong {
+  color: var(--color-danger);
+  font-size: 0.83rem;
+}
+
+.frame-card span {
+  color: var(--color-muted);
+  font-size: 0.78rem;
+}
+
 .highlight-box {
   min-height: 170px;
   max-height: 360px;
@@ -773,6 +838,10 @@ pre {
 
   h1 {
     font-size: 2.8rem;
+  }
+
+  .frame-gallery {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -942,6 +1011,14 @@ pre {
           <ul id="evidenceList" class="evidence-list">
             <li>Run a scan to see evidence.</li>
           </ul>
+
+          <div class="frame-section" id="frameSection" hidden>
+            <div class="frame-heading">
+              <h3>Most suspicious frames</h3>
+              <span id="frameSummary"></span>
+            </div>
+            <div id="frameGallery" class="frame-gallery"></div>
+          </div>
         </section>
 
         <section class="panel evidence-panel">
@@ -1005,6 +1082,9 @@ const highlightedText = document.querySelector("#highlightedText");
 const historyList = document.querySelector("#historyList");
 const refreshHistory = document.querySelector("#refreshHistory");
 const watchlistButtons = document.querySelectorAll(".watchlist button");
+const frameSection = document.querySelector("#frameSection");
+const frameGallery = document.querySelector("#frameGallery");
+const frameSummary = document.querySelector("#frameSummary");
 
 let activeMode = "message";
 
@@ -1132,10 +1212,37 @@ function renderResult(result) {
 
   renderCategories(result);
   renderEvidence(result);
+  renderFrames(result.dl_result);
   renderContext(result.rag_context);
   renderHighlightedText(result.input_text, result.features);
 
   markdownReport.textContent = result.report_markdown;
+}
+
+function renderFrames(mediaResult) {
+  const frames = mediaResult.frame_results || [];
+  const analysis = mediaResult.content_analysis || {};
+  if (!frames.length) {
+    frameSection.hidden = true;
+    frameGallery.innerHTML = "";
+    return;
+  }
+
+  frameSection.hidden = false;
+  frameSummary.textContent = `${analysis.sampled_frames || frames.length} sampled`;
+  frameGallery.innerHTML = "";
+  frames.forEach((frame) => {
+    const card = document.createElement("article");
+    card.className = "frame-card";
+    card.innerHTML = `
+      <img src="${frame.preview}" alt="Sampled video frame at ${frame.timestamp_seconds} seconds" />
+      <div>
+        <strong>${frame.ai_score}% AI likelihood</strong>
+        <span>${frame.timestamp_seconds}s</span>
+      </div>
+    `;
+    frameGallery.appendChild(card);
+  });
 }
 
 function renderCategories(result) {
@@ -1261,6 +1368,8 @@ function resetResults() {
   contextList.innerHTML = "";
   categoryGrid.innerHTML = `<p class="empty-state">Run a scan to populate category meters.</p>`;
   highlightedText.textContent = "Risky phrases, links, and money terms will be highlighted here.";
+  frameSection.hidden = true;
+  frameGallery.innerHTML = "";
   markdownReport.textContent = "No report yet.";
 }
 
@@ -1486,12 +1595,32 @@ def analyze_uploaded_file(file_meta, file_bytes):
         score += 10
         signals.append("Video content type and extension do not clearly match.")
 
-    score = max(0, min(score, 100))
+    heuristic_score = max(0, min(score, 100))
+    content_result = analyze_media_content(file_meta) if analyze_media_content else None
+
+    if content_result and content_result.get("available"):
+        score = round((content_result["content_score"] * 0.90) + (heuristic_score * 0.10))
+        signals.insert(
+            0,
+            f"Frame model sampled {content_result['sampled_frames']} frames; "
+            f"average AI likelihood was {content_result['average_frame_score']}%.",
+        )
+        model_name = content_result["model_name"]
+    else:
+        score = heuristic_score
+        model_name = "TruthShield metadata heuristic fallback"
+        if content_result:
+            signals.insert(0, content_result.get("error", "AI content model is unavailable."))
+
     level = "High" if score >= 70 else "Medium" if score >= 40 else "Low"
     return {
         "visual_risk_score": score,
         "visual_risk_level": level,
-        "model_name": "TruthShield visual heuristic baseline v1",
+        "model_name": model_name,
+        "detector_mode": content_result.get("detector_mode") if content_result else "heuristic-fallback",
+        "content_analysis": content_result,
+        "heuristic_score": heuristic_score,
+        "frame_results": content_result.get("frame_results", []) if content_result else [],
         "signals": signals,
     }
 
@@ -1541,6 +1670,8 @@ def build_report(scan_id, input_text, features, ml_result, dl_result, rag_contex
         "",
         f"- Text risk: **{ml_result['risk_level']}** ({ml_result['risk_score']}/100)",
         f"- Visual/file risk: **{dl_result['visual_risk_level']}** ({dl_result['visual_risk_score']}/100)",
+        f"- Media detector: `{dl_result.get('detector_mode', 'not-applicable')}`",
+        f"- Media model: `{dl_result.get('model_name', 'Not analyzed')}`",
         "",
         "## Key Reasons",
         "",
@@ -1550,6 +1681,17 @@ def build_report(scan_id, input_text, features, ml_result, dl_result, rag_contex
         lines.append(f"- {reason}")
     for signal in dl_result["signals"]:
         lines.append(f"- {signal}")
+
+    content_analysis = dl_result.get("content_analysis") or {}
+    if content_analysis.get("available"):
+        lines.extend([
+            "",
+            "## Frame Analysis",
+            "",
+            f"- Sampled frames: {content_analysis['sampled_frames']}",
+            f"- Average frame AI likelihood: {content_analysis['average_frame_score']}%",
+            f"- Suspicious frame ratio: {content_analysis['suspicious_frame_ratio']}%",
+        ])
 
     lines.extend([
         "",
@@ -1719,5 +1861,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
